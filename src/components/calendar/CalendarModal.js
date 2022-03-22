@@ -1,29 +1,102 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
+import DateTimePicker from 'react-datetime-picker';
+
 import { customStyles } from '../../helpers/centerModalStyles';
+import moment from 'moment';
 
 Modal.setAppElement('#root');
 
+const now = moment().minutes(0).seconds(0).add(1, 'hours');
+const nowPlusOne = moment().clone().add(2, 'hours'); // El método "clone()" genera una copia de la fecha establecida previamente.
+
 export const CalendarModal = () => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [dateStart, setDateStart] = useState(now.toDate());
+    const [dateEnd, setDateEnd] = useState(nowPlusOne.toDate());
 
     const closeModal = () => {
-        setIsOpen(false);
-    }
+
+    };
+
+    const handleStartDateChange = (e) => {
+        console.log(e);
+        setDateStart(e);
+    };
+
+    const handleEndDateChange = (e) => {
+        console.log(e);
+        setDateEnd(e);
+    };
 
     return (
 
         <Modal
-            isOpen={isOpen}
-            // onAfterOpen={afterOpenModal}
+            isOpen={true}
             onRequestClose={closeModal}
             style={customStyles}
             closeTimeoutMS={200}
             className='modal'
             overlayClassName='modal-fondo'
         >
-            <h1>Hola Mundo</h1>
+            <h1> Nuevo evento </h1>
+            <hr />
+            <form className="container">
+
+                <div className="form-group">
+                    <label>Fecha y hora inicio</label>
+                    <DateTimePicker
+                        onChange={handleStartDateChange}
+                        value={dateStart}
+                        className='form-control'
+                    />
+                </div>
+
+                <div className="form-group mt-2">
+                    <label>Fecha y hora fin</label>
+                    <DateTimePicker
+                        onChange={handleEndDateChange}
+                        value={dateEnd}
+                        minDate={dateStart}
+                        className='form-control'
+                    />
+                </div>
+
+                <hr />
+                <div className="form-group">
+                    <label>Titulo y notas</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Título del evento"
+                        name="title"
+                        autoComplete="off"
+                    />
+                    <small id="emailHelp" className="form-text text-muted">Una descripción corta</small>
+                </div>
+
+                <div className="form-group mt-2">
+                    <textarea
+                        type="text"
+                        className="form-control"
+                        placeholder="Notas"
+                        rows="5"
+                        name="notes"
+                    ></textarea>
+                    <small id="emailHelp" className="form-text text-muted">Información adicional</small>
+                </div>
+
+                <div className="d-grid">
+                    <button
+                        type="submit"
+                        className="btn btn-outline-primary mt-2"
+                    >
+                        <i className="far fa-save"></i>
+                        <span> Guardar</span>
+                    </button>
+                </div>
+
+            </form>
         </Modal>
     )
-}
+};
