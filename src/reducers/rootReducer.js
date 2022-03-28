@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { calendarReducer } from "./calendarReduce";
+import { calendarReducer } from "./calendarReducer";
 
 import { uiReducer } from "./uiReducer";
 
