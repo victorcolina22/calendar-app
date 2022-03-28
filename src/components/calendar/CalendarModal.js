@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Modal from 'react-modal';
 
-import DateTimePicker from 'react-datetime-picker';
-
 import { customStyles } from '../../helpers/centerModalStyles';
+
+import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 
 Modal.setAppElement('#root');
 
@@ -14,6 +15,8 @@ const nowPlusOne = moment().clone().add(2, 'hours'); // El método "clone()" gen
 export const CalendarModal = () => {
     const [dateStart, setDateStart] = useState(now.toDate());
     const [dateEnd, setDateEnd] = useState(nowPlusOne.toDate());
+    const [titleValid, setTitleValid] = useState(true)
+
     const [formValues, setFormValues] = useState({
         title: 'Evento',
         notes: '',
@@ -21,7 +24,9 @@ export const CalendarModal = () => {
         end: nowPlusOne.toDate()
     });
 
-    const { notes, title } = formValues;
+    const { notes, title, start, end } = formValues;
+
+    const inputTitle = useRef();
 
     const handleInputChange = ({ target }) => {
         setFormValues({
@@ -31,7 +36,7 @@ export const CalendarModal = () => {
     };
 
     const closeModal = () => {
-
+        //TODO: Cerrar el modal
     };
 
     const handleStartDateChange = (e) => {
@@ -52,7 +57,22 @@ export const CalendarModal = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formValues);
+
+        const momentStart = moment(start);
+        const momentEnd = moment(end);
+
+        if (momentStart.isSameOrAfter(momentEnd)) {
+            Swal.fire('Error', 'La fecha fin debe ser mayor a la fecha de inicio', 'error');
+            return;
+        };
+
+        if (title.trim().length < 2) {
+            setTitleValid(false);
+            return;
+        }
+
+        setTitleValid(true);
+        closeModal();
     }
 
     return (
@@ -95,13 +115,19 @@ export const CalendarModal = () => {
                     <label>Titulo y notas</label>
                     <input
                         type="text"
-                        className="form-control"
+                        className={titleValid ? 'form-control eventTitle' : 'form-control eventTitle is-invalid'}
                         placeholder="Título del evento"
                         name="title"
                         value={title}
                         onChange={handleInputChange}
                         autoComplete="off"
+                        ref={inputTitle}
                     />
+                    <p
+                        className='invalid-text'
+                        style={{ display: titleValid ? 'none' : 'block' }}>
+                        El título debe ser mayor a 2 carácteres
+                    </p>
                     <small id="emailHelp" className="form-text text-muted">Una descripción corta</small>
                 </div>
 

@@ -66,3 +66,24 @@ body {
 .react-datetime-picker__wrapper {
   border: 0px solid gray !important;
 }
+
+.invalid-text {
+  color: red;
+  transition: 250ms ease-in-out;
+}
+
+.eventTitle.is-invalid {
+  animation: shake 300ms;
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(4px);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
