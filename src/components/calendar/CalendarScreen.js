@@ -6,7 +6,7 @@ import { CalendarEvent } from './CalendarEvent';
 import { CalendarModal } from './CalendarModal';
 import { messages } from '../../helpers/calendar-messages';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { uiOpenModal } from '../../actions/ui';
 
 import moment from 'moment';
@@ -19,20 +19,9 @@ moment.locale('es');
 
 const localizer = momentLocalizer(moment);
 
-const myEventsList = [
-    {
-        title: 'Cumpleaños del jefe',
-        start: moment().toDate(),
-        end: moment().add(2, 'hours').toDate(),
-        user: {
-            _id: '123',
-            name: 'Victor'
-        }
-    }
-];
-
 export const CalendarScreen = () => {
     const dispatch = useDispatch();
+    const { events } = useSelector(state => state.calendar);
 
     const [lasView, setLastView] = useState(localStorage.getItem('lastView' || 'month'));
 
@@ -56,7 +45,6 @@ export const CalendarScreen = () => {
 
     const onSelect = (e) => {
         dispatch(eventSetActive(e));
-        dispatch(uiOpenModal(e));
     };
 
     const onViewChange = (view) => {
@@ -71,7 +59,7 @@ export const CalendarScreen = () => {
             <div className="myCustomHeight calendar-screen">
                 <Calendar
                     localizer={localizer}
-                    events={myEventsList}
+                    events={events}
                     startAccessor="start"
                     endAccessor="end"
                     messages={messages}
