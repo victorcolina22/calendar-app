@@ -9,7 +9,7 @@ import { uiCloseModal } from '../../actions/ui';
 import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
 import Swal from 'sweetalert2';
-import { eventAddNew, eventClearActiveEvent } from '../../actions/events';
+import { eventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/events';
 
 Modal.setAppElement('#root');
 
@@ -89,14 +89,18 @@ export const CalendarModal = () => {
             return;
         }
 
-        dispatch(eventAddNew({
-            ...formValues,
-            id: new Date().getTime(),
-            user: {
-                _id: '123',
-                name: 'Victor'
-            }
-        }));
+        if (activeEvent) {
+            dispatch(eventUpdated(formValues));
+        } else {
+            dispatch(eventAddNew({
+                ...formValues,
+                id: new Date().getTime(),
+                user: {
+                    _id: '123',
+                    name: 'Victor'
+                }
+            }));
+        };
 
         setTitleValid(true);
         closeModal();
